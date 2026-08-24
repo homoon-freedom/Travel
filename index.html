@@ -1,343 +1,338 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>워크북(기적수업)</title>
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-:root {
---bg-canvas: #f8f9fa; --page-bg: #ffffff; --text-color: #2c3e50;
---accent-color: #27ae60; --font-size: 18px; --bracket-color: #2980b9; 
-}
-body {
-margin: 0; padding: 0; background: var(--bg-canvas);
-font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-color: var(--text-color); display: flex; flex-direction: column; align-items: center; min-height: 100vh;
-}
-.top-nav {
-width: 100%; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-display: flex; flex-direction: column; padding: 12px 20px;
-box-sizing: border-box; position: fixed; top: 0; z-index: 1000; gap: 10px;
-}
-#book-title-input { border: none; font-size: 18px; font-weight: bold; outline: none; width: 100%; background: transparent; border-bottom: 1px solid #f1f3f5; padding-bottom: 4px; }
-#book-title-input:read-only { color: #7f8c8d; cursor: default; border-bottom-color: transparent; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>워크북(기적수업)</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-canvas: #f8f9fa; --page-bg: #ffffff; --text-color: #2c3e50;
+            --accent-color: #27ae60; --font-size: 18px; --bracket-color: #2980b9; 
+        }
+        body {
+            margin: 0; padding: 0; background: var(--bg-canvas);
+            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            color: var(--text-color); display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+        .top-nav {
+            width: 100%; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column; padding: 12px 20px;
+            box-sizing: border-box; position: fixed; top: 0; z-index: 1000; gap: 10px;
+        }
+        #book-title-input { border: none; font-size: 18px; font-weight: bold; outline: none; width: 100%; background: transparent; border-bottom: 1px solid #f1f3f5; padding-bottom: 4px; }
+        #book-title-input:read-only { color: #7f8c8d; cursor: default; border-bottom-color: transparent; }
 
-.content-area {
-width: 100%; max-width: 800px; margin: 110px 0 95px;
-background: var(--page-bg); min-height: calc(100vh - 180px);
-box-shadow: 0 0 20px rgba(0,0,0,0.05); padding: 40px 30px; box-sizing: border-box;
-}
-.render-box { line-height: 1.8; word-break: break-all; white-space: pre-wrap; text-align: left; outline: none; }
+        .content-area {
+            width: 100%; max-width: 800px; margin: 110px 0 95px;
+            background: var(--page-bg); min-height: calc(100vh - 180px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.05); padding: 40px 30px; box-sizing: border-box;
+        }
+        .render-box { line-height: 1.8; word-break: break-all; white-space: pre-wrap; text-align: left; outline: none; }
+        
+        .header-big { display: block; font-size: 1.4em; font-weight: 900; margin: 1em 0 0.5em; color: #111; line-height: 1.2; }
+        .header-mid { display: block; font-size: 1.25em; font-weight: 800; margin: 1.2em 0 0.6em; color: #1a252f; border-left: 5px solid var(--accent-color); padding-left: 12px; line-height: 1.4; }
+        .header-small { display: block; font-size: 1.1em; font-weight: 800; margin: 1em 0 0.4em; color: #34495e; line-height: 1.4; }
+        .bullet-line { display: block; padding-left: 5px; margin-bottom: 0.4em; }
+        .quote-line { display: block; color: #7f8c8d; font-style: italic; border-left: 3px solid #ecf0f1; padding-left: 15px; margin: 0.5em 0; }
+        .bold-text { font-weight: 800; color: #1a252f; } 
+        .bracket-highlight { color: var(--bracket-color); font-weight: 600; }
+        .quote-highlight { color: var(--accent-color); font-weight: 800; font-style: italic; }
 
-.header-big { display: block; font-size: 1.4em; font-weight: 900; margin: 1em 0 0.5em; color: #111; line-height: 1.2; }
-.header-mid { display: block; font-size: 1.25em; font-weight: 800; margin: 1.2em 0 0.6em; color: #1a252f; border-left: 5px solid var(--accent-color); padding-left: 12px; line-height: 1.4; }
-.header-small { display: block; font-size: 1.1em; font-weight: 800; margin: 1em 0 0.4em; color: #34495e; line-height: 1.4; }
-.bullet-line { display: block; padding-left: 5px; margin-bottom: 0.4em; }
-.quote-line { display: block; color: #7f8c8d; font-style: italic; border-left: 3px solid #ecf0f1; padding-left: 15px; margin: 0.5em 0; }
-.bold-text { font-weight: 800; color: #1a252f; } 
-.bracket-highlight { color: var(--bracket-color); font-weight: 600; }
-.quote-highlight { color: var(--accent-color); font-weight: 800; font-style: italic; }
+        .bottom-nav {
+            position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+            width: calc(100% - 32px); max-width: 740px; height: 55px; 
+            background: #2c3e50; display: flex; z-index: 1000;
+            border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); overflow: hidden;
+        }
+        .nav-btn { background: none; border: none; color: white; font-size: 14px; font-weight: 500; cursor: pointer; flex: 1; height: 100%; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .nav-btn:hover { background: #34495e; }
+        .nav-btn:not(:last-child) { border-right: 1px solid rgba(255, 255, 255, 0.15); }
 
-.bottom-nav {
-position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
-width: calc(100% - 32px); max-width: 740px; height: 55px; 
-background: #2c3e50; display: flex; z-index: 1000;
-border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); overflow: hidden;
-}
-.nav-btn { background: none; border: none; color: white; font-size: 14px; font-weight: 500; cursor: pointer; flex: 1; height: 100%; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
-.nav-btn:hover { background: #34495e; }
-.nav-btn:not(:last-child) { border-right: 1px solid rgba(255, 255, 255, 0.15); }
+        .mode-switch-container { display: flex; background: #edf2f7; padding: 4px; border-radius: 20px; gap: 2px; }
+        .mode-toggle-btn { padding: 6px 14px; border-radius: 16px; border: none; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; background: transparent; color: #718096; }
 
-.mode-switch-container { display: flex; background: #edf2f7; padding: 4px; border-radius: 20px; gap: 2px; }
-.mode-toggle-btn { padding: 6px 14px; border-radius: 16px; border: none; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; background: transparent; color: #718096; }
-
-.modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 95%; max-width: 860px; background: white; border-radius: 20px; padding: 25px; display: none; z-index: 2000; box-shadow: 0 20px 50px rgba(0,0,0,0.3); box-sizing: border-box; }
-.modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); display: none; z-index: 1500; }
-.image-card-container { display: flex; flex-direction: column; gap: 20px; max-height: 50vh; overflow: auto; margin: 15px 0; padding: 15px; background: #eee; border-radius: 12px; }
-#hidden-capture-zone { position: absolute; left: -9999px; top: -9999px; width: 810px; }
-.share-card { background: #ffffff; padding: 45px 35px; width: 810px; box-sizing: border-box; color: #2c3e50; }
-.card-header { font-size: 16px; font-weight: bold; border-bottom: 2.5px solid var(--accent-color); padding-bottom: 12px; margin-bottom: 25px; color: #34495e; }
-.card-footer { margin-top: 40px; font-size: 12px; color: #bdc3c7; text-align: center; border-top: 1px solid #f1f1f1; padding-top: 15px; }
-.preview-img { width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-.save-toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: white; padding: 10px 25px; border-radius: 30px; display: none; z-index: 3000; }
-
-.book-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-.book-item:hover { background: #f8f9fa; }
-.book-item-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.delete-btn { background: none; border: none; cursor: pointer; padding: 5px 8px; border-radius: 5px; font-size: 14px; }
-.delete-btn:hover { background: #fee; }
-.at-highlight { color: #27ae60; font-weight: 800; } /* 초록색 강조 스타일 */
-</style>
+        .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 95%; max-width: 860px; background: white; border-radius: 20px; padding: 25px; display: none; z-index: 2000; box-shadow: 0 20px 50px rgba(0,0,0,0.3); box-sizing: border-box; }
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); display: none; z-index: 1500; }
+        .image-card-container { display: flex; flex-direction: column; gap: 20px; max-height: 50vh; overflow: auto; margin: 15px 0; padding: 15px; background: #eee; border-radius: 12px; }
+        #hidden-capture-zone { position: absolute; left: -9999px; top: -9999px; width: 810px; }
+        .share-card { background: #ffffff; padding: 45px 35px; width: 810px; box-sizing: border-box; color: #2c3e50; }
+        .card-header { font-size: 16px; font-weight: bold; border-bottom: 2.5px solid var(--accent-color); padding-bottom: 12px; margin-bottom: 25px; color: #34495e; }
+        .card-footer { margin-top: 40px; font-size: 12px; color: #bdc3c7; text-align: center; border-top: 1px solid #f1f1f1; padding-top: 15px; }
+        .preview-img { width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .save-toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: white; padding: 10px 25px; border-radius: 30px; display: none; z-index: 3000; }
+        
+        .book-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .book-item:hover { background: #f8f9fa; }
+        .book-item-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .delete-btn { background: none; border: none; cursor: pointer; padding: 5px 8px; border-radius: 5px; font-size: 14px; }
+        .delete-btn:hover { background: #fee; }
+        .at-highlight { color: #27ae60; font-weight: 800; } /* 초록색 강조 스타일 */
+    </style>
 </head>
 <body>
 
-<div class="top-nav">
-<div>
-<div class="mode-switch-container" style="display:inline-flex;">
-<button onclick="setMode(false)" id="read-mode-btn" class="mode-toggle-btn">👁️ 읽기</button>
-<button onclick="setMode(true)" id="edit-mode-btn" class="mode-toggle-btn">✎ 편집</button>
-</div>
-</div>
-<input type="text" id="book-title-input" placeholder="제목을 입력하세요">
-</div>
+    <div class="top-nav">
+        <div>
+            <div class="mode-switch-container" style="display:inline-flex;">
+                <button onclick="setMode(false)" id="read-mode-btn" class="mode-toggle-btn">👁️ 읽기</button>
+                <button onclick="setMode(true)" id="edit-mode-btn" class="mode-toggle-btn">✎ 편집</button>
+            </div>
+        </div>
+        <input type="text" id="book-title-input" placeholder="제목을 입력하세요">
+    </div>
 
-<div class="content-area">
-<div id="editor-surface" class="render-box" contenteditable="false"></div>
-</div>
+    <div class="content-area">
+        <div id="editor-surface" class="render-box" contenteditable="false"></div>
+    </div>
 
-<div class="bottom-nav">
-<button class="nav-btn" onclick="openLibrary()">서재</button>
-<button class="nav-btn" onclick="createNewBook()">새글</button>
-<button class="nav-btn" onclick="saveCurrentBook()">저장</button>
-<button class="nav-btn" onclick="triggerImageUpload()">사진</button>
-<button class="nav-btn" onclick="generateShareImages()">전송</button>
-<button class="nav-btn" onclick="adjustFont(1)">확대</button>
-<button class="nav-btn" onclick="adjustFont(-1)">축소</button>
-</div>
+    <div class="bottom-nav">
+        <button class="nav-btn" onclick="openLibrary()">서재</button>
+        <button class="nav-btn" onclick="createNewBook()">새글</button>
+        <button class="nav-btn" onclick="saveCurrentBook()">저장</button>
+        <button class="nav-btn" onclick="triggerImageUpload()">사진</button>
+        <button class="nav-btn" onclick="generateShareImages()">전송</button>
+        <button class="nav-btn" onclick="adjustFont(1)">확대</button>
+        <button class="nav-btn" onclick="adjustFont(-1)">축소</button>
+    </div>
 
-<input type="file" id="image-upload" accept="image/*" style="display:none;">
+    <input type="file" id="image-upload" accept="image/*" style="display:none;">
+    
+    <div id="hidden-capture-zone"></div>
+    <div class="modal-overlay" id="overlay" onclick="closeModals()"></div>
+    
+    <div class="modal" id="share-modal">
+        <h3 style="margin:0; text-align: center;">🚀 이미지 카드 생성 완료</h3>
+        <p style="font-size: 13px; color: #7f8c8d; text-align: center; margin-top: 5px;">이미지를 길게 눌러 직접 저장/공유도 가능합니다.</p>
+        <div class="image-card-container" id="share-cards-list"></div>
+        <button id="share-api-btn" onclick="shareCapturedFiles()" style="width:100%; padding:16px; border:none; border-radius:12px; background:#fee500; color:#3c1e1e; cursor:pointer; font-weight:bold; font-size:16px;">💬 이미지 카드 전송 (OS 공유)</button>
+        <button onclick="closeModals()" style="width:100%; margin-top:10px; padding:10px; border:none; background:none; color:#999; cursor:pointer;">취소</button>
+    </div>
 
-<div id="hidden-capture-zone"></div>
-<div class="modal-overlay" id="overlay" onclick="closeModals()"></div>
+    <div class="modal" id="library-modal">
+        <h3 style="margin-top:0;">📚 내 서재</h3>
+        <div id="book-list" style="max-height: 40vh; overflow-y: auto;"></div>
+        <button onclick="closeModals()" style="width:100%; margin-top:15px; padding:10px; border:none; border-radius:8px; background:#95a5a6; color:white;">닫기</button>
+    </div>
 
-<div class="modal" id="share-modal">
-<h3 style="margin:0; text-align: center;">🚀 이미지 카드 생성 완료</h3>
-<p style="font-size: 13px; color: #7f8c8d; text-align: center; margin-top: 5px;">이미지를 길게 눌러 직접 저장/공유도 가능합니다.</p>
-<div class="image-card-container" id="share-cards-list"></div>
-<button id="share-api-btn" onclick="shareCapturedFiles()" style="width:100%; padding:16px; border:none; border-radius:12px; background:#fee500; color:#3c1e1e; cursor:pointer; font-weight:bold; font-size:16px;">💬 이미지 카드 전송 (OS 공유)</button>
-<button onclick="closeModals()" style="width:100%; margin-top:10px; padding:10px; border:none; background:none; color:#999; cursor:pointer;">취소</button>
-</div>
+    <div class="save-toast" id="save-toast">✅ 저장 완료</div>
 
-<div class="modal" id="library-modal">
-<h3 style="margin-top:0;">📚 내 서재</h3>
-<div id="book-list" style="max-height: 40vh; overflow-y: auto;"></div>
-<button onclick="closeModals()" style="width:100%; margin-top:15px; padding:10px; border:none; border-radius:8px; background:#95a5a6; color:white;">닫기</button>
-</div>
+    <script>
+        const SUPABASE_URL = 'https://ocghxynajjbkpbyljxzg.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jZ2h4eW5hampia3BieWxqeHpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2OTg4MTksImV4cCI6MjA5MTI3NDgxOX0.weaiOCV0UMjsfSmEI_WU_0L4qJUOGRrtoWEwPKN26is';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-<div class="save-toast" id="save-toast">✅ 저장 완료</div>
+        let currentBookId = null, isEditMode = false, fontSize = 18, rawContent = "", globalGeneratedFiles = [];
+        const $ = id => document.getElementById(id);
 
-<script>
-const SUPABASE_URL = 'https://ocghxynajjbkpbyljxzg.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jZ2h4eW5hampia3BieWxqeHpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2OTg4MTksImV4cCI6MjA5MTI3NDgxOX0.weaiOCV0UMjsfSmEI_WU_0L4qJUOGRrtoWEwPKN26is';
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        async function init() {
+            const savedFontSize = localStorage.getItem('eb_font_size');
+            if (savedFontSize) $('editor-surface').style.fontSize = (fontSize = parseInt(savedFontSize, 10)) + 'px';
 
-let currentBookId = null, isEditMode = false, fontSize = 18, rawContent = "", globalGeneratedFiles = [];
-const $ = id => document.getElementById(id);
+            try {
+                const { data } = await supabaseClient.from('acim_workbook').select('*').order('updated_at', { ascending: false }).limit(1);
+                data && data.length > 0 ? loadBookData(data[0]) : createNewBook();
+            } catch (err) { createNewBook(); }
+        }
 
-async function init() {
-const savedFontSize = localStorage.getItem('eb_font_size');
-if (savedFontSize) $('editor-surface').style.fontSize = (fontSize = parseInt(savedFontSize, 10)) + 'px';
+        function parseMarkdown(text) {
+            if (!text) return "";
+            return text.split('\n').map(line => {
+                // 1. 이미지 마크다운 먼저 파싱하여 보호
+                let images = [];
+                let p = line.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
+                    images.push(`<img src="${url}" alt="${alt}" style="max-width:100%; border-radius:8px; display:block; margin: 15px auto;">`);
+                    return `__IMG_${images.length - 1}__`;
+                });
 
-try {
-const { data } = await supabaseClient.from('acim_workbook').select('*').order('updated_at', { ascending: false }).limit(1);
-data && data.length > 0 ? loadBookData(data[0]) : createNewBook();
-} catch (err) { createNewBook(); }
-}
-
-function parseMarkdown(text) {
-if (!text) return "";
-return text.split('\n').map(line => {
-// 1. 이미지 마크다운 먼저 파싱하여 보호
-let images = [];
-let p = line.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
-images.push(`<img src="${url}" alt="${alt}" style="max-width:100%; border-radius:8px; display:block; margin: 15px auto;">`);
-return `__IMG_${images.length - 1}__`;
-});
-
-                // 2. 텍스트 스타일링 적용 (@ 기호 파싱 추가)
                 // 2. 텍스트 스타일링 적용 (@와 @ 사이의 모든 글자를 초록색으로)
-p = p.replace(/\*\*(.*?)\*\*/g, '<span class="bold-text">$1</span>')
-.replace(/\((.*?)\)/g, '<span class="bracket-highlight">($1)</span>')
-.replace(/“(.*?)”/g, '“<span class="quote-highlight">$1</span>”')
-                   .replace(/@([^\s]+)/g, '<span class="at-highlight">@$1</span>'); // <-- 이 부분이 추가되었습니다.
+                p = p.replace(/\*\*(.*?)\*\*/g, '<span class="bold-text">$1</span>')
+                   .replace(/\((.*?)\)/g, '<span class="bracket-highlight">($1)</span>')
+                   .replace(/“(.*?)”/g, '“<span class="quote-highlight">$1</span>”')
                    .replace(/@(.*?)@/g, '<span class="at-highlight">$1</span>'); // <-- 이 부분의 정규식이 변경되었습니다.
-
-// 3. 이미지 다시 복구
-images.forEach((img, i) => {
-p = p.replace(`__IMG_${i}__`, img);
-});
-
-const t = p.trim();
-if (t.startsWith('###')) return `<span class="header-big">${p.replace(/^###\s*/, '')}</span>`;
-if (t.startsWith('##')) return `<span class="header-mid">${p.replace(/^##\s*/, '')}</span>`;
-if (t.startsWith('#')) return `<span class="header-small">${p.replace(/^#\s*/, '')}</span>`;
-if (t.startsWith('*')) return `<span class="bullet-line">• ${p.replace(/^\s*\*\s*/, '')}</span>`;
-if (t.startsWith('>')) return `<span class="quote-line">${p.replace(/^>\s*/, '')}</span>`;
-
-                // 만약 @로 시작하는 '줄 전체'를 초록색으로 만들고 싶다면 아래 주석을 해제하세요.
-                // if (t.startsWith('@')) return `<div class="at-highlight">${p}</div>`;
                 
-return t === "" ? "<div><br></div>" : `<div>${p}</div>`;
-}).join('');
-}
-function renderContent() {
-$('editor-surface').innerHTML = isEditMode ? rawContent : parseMarkdown(rawContent);
-if(isEditMode) $('editor-surface').innerText = rawContent;
-}
+                // 3. 이미지 다시 복구
+                images.forEach((img, i) => {
+                    p = p.replace(`__IMG_${i}__`, img);
+                });
 
-function setMode(editMode) {
-if (isEditMode && !editMode) rawContent = $('editor-surface').innerText;
-isEditMode = editMode;
+                const t = p.trim();
+                if (t.startsWith('###')) return `<span class="header-big">${p.replace(/^###\s*/, '')}</span>`;
+                if (t.startsWith('##')) return `<span class="header-mid">${p.replace(/^##\s*/, '')}</span>`;
+                if (t.startsWith('#')) return `<span class="header-small">${p.replace(/^#\s*/, '')}</span>`;
+                if (t.startsWith('*')) return `<span class="bullet-line">• ${p.replace(/^\s*\*\s*/, '')}</span>`;
+                if (t.startsWith('>')) return `<span class="quote-line">${p.replace(/^>\s*/, '')}</span>`;
+                
+                return t === "" ? "<div><br></div>" : `<div>${p}</div>`;
+            }).join('');
+        }
+        function renderContent() {
+            $('editor-surface').innerHTML = isEditMode ? rawContent : parseMarkdown(rawContent);
+            if(isEditMode) $('editor-surface').innerText = rawContent;
+        }
 
-const surface = $('editor-surface');
-surface.contentEditable = isEditMode;
-renderContent();
-if(isEditMode) surface.focus();
+        function setMode(editMode) {
+            if (isEditMode && !editMode) rawContent = $('editor-surface').innerText;
+            isEditMode = editMode;
 
-$('book-title-input').readOnly = !isEditMode;
-$('edit-mode-btn').style.cssText = isEditMode ? "background:#f1c40f; color:#2c3e50; font-weight:bold;" : "background:transparent; color:#718096;";
-$('read-mode-btn').style.cssText = !isEditMode ? "background:var(--accent-color); color:#fff; font-weight:bold;" : "background:transparent; color:#718096;";
-}
+            const surface = $('editor-surface');
+            surface.contentEditable = isEditMode;
+            renderContent();
+            if(isEditMode) surface.focus();
 
-// --- 이미지 업로드 추가 영역 ---
-function triggerImageUpload() {
-if (!isEditMode) return alert("편집 모드(✎)에서만 사진을 추가할 수 있습니다.");
-$('image-upload').click();
-}
+            $('book-title-input').readOnly = !isEditMode;
+            $('edit-mode-btn').style.cssText = isEditMode ? "background:#f1c40f; color:#2c3e50; font-weight:bold;" : "background:transparent; color:#718096;";
+            $('read-mode-btn').style.cssText = !isEditMode ? "background:var(--accent-color); color:#fff; font-weight:bold;" : "background:transparent; color:#718096;";
+        }
 
-$('image-upload').addEventListener('change', function(e) {
-const file = e.target.files[0];
-if (!file) return;
+        // --- 이미지 업로드 추가 영역 ---
+        function triggerImageUpload() {
+            if (!isEditMode) return alert("편집 모드(✎)에서만 사진을 추가할 수 있습니다.");
+            $('image-upload').click();
+        }
 
-if (file.size > 1.5 * 1024 * 1024) {
-alert("용량이 너무 큽니다. 1.5MB 이하의 이미지만 업로드 가능합니다.");
-e.target.value = '';
-return;
-}
+        $('image-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
 
-const reader = new FileReader();
-reader.onload = function(event) {
-const base64Url = event.target.result;
-const imageMarkdown = `\n![이미지](${base64Url})\n`;
+            if (file.size > 1.5 * 1024 * 1024) {
+                alert("용량이 너무 큽니다. 1.5MB 이하의 이미지만 업로드 가능합니다.");
+                e.target.value = '';
+                return;
+            }
 
-const surface = $('editor-surface');
-surface.innerText += imageMarkdown;
-rawContent = surface.innerText;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const base64Url = event.target.result;
+                const imageMarkdown = `\n![이미지](${base64Url})\n`;
+                
+                const surface = $('editor-surface');
+                surface.innerText += imageMarkdown;
+                rawContent = surface.innerText;
+                
+                renderContent(); 
+                window.scrollTo(0, document.body.scrollHeight);
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        });
+        // ------------------------------
 
-renderContent(); 
-window.scrollTo(0, document.body.scrollHeight);
-};
-reader.readAsDataURL(file);
-e.target.value = '';
-});
-// ------------------------------
+        async function generateShareImages() {
+            if (isEditMode) rawContent = $('editor-surface').innerText;
+            if (!rawContent.trim()) return alert("공유할 내용이 없습니다.");
 
-async function generateShareImages() {
-if (isEditMode) rawContent = $('editor-surface').innerText;
-if (!rawContent.trim()) return alert("공유할 내용이 없습니다.");
+            const title = $('book-title-input').value || '나의 기록';
+            const list = $('share-cards-list');
+            const zone = $('hidden-capture-zone');
+            
+            list.innerHTML = "<div style='text-align:center; padding:20px; width:100%; color:#666;'>⏳ 카드 이미지 생성 중...</div>";
+            zone.innerHTML = ""; globalGeneratedFiles = [];
+            $('share-modal').style.display = $('overlay').style.display = 'block';
 
-const title = $('book-title-input').value || '나의 기록';
-const list = $('share-cards-list');
-const zone = $('hidden-capture-zone');
+            const lines = rawContent.split('\n');
+            const size = Math.ceil(lines.length / 3);
 
-list.innerHTML = "<div style='text-align:center; padding:20px; width:100%; color:#666;'>⏳ 카드 이미지 생성 중...</div>";
-zone.innerHTML = ""; globalGeneratedFiles = [];
-$('share-modal').style.display = $('overlay').style.display = 'block';
+            try {
+                for(let i=0; i<3; i++) {
+                    const chunk = lines.slice(i*size, (i+1)*size);
+                    if (!chunk.length || (chunk.length === 1 && chunk[0] === "")) continue;
 
-const lines = rawContent.split('\n');
-const size = Math.ceil(lines.length / 3);
+                    const card = document.createElement('div');
+                    card.className = 'share-card';
+                    card.innerHTML = `<div class="card-header">${title} (${i+1}/3)</div><div class="render-box" style="font-size:18px;">${parseMarkdown(chunk.join('\n'))}</div><div class="card-footer">워크북(기적수업)</div>`;
+                    zone.appendChild(card);
 
-try {
-for(let i=0; i<3; i++) {
-const chunk = lines.slice(i*size, (i+1)*size);
-if (!chunk.length || (chunk.length === 1 && chunk[0] === "")) continue;
+                    const canvas = await html2canvas(card, { scale: 2, backgroundColor: "#fff", useCORS: true, height: card.scrollHeight });
+                    const dataUrl = canvas.toDataURL('image/png');
+                    
+                    const img = document.createElement('img');
+                    img.src = dataUrl; img.className = 'preview-img';
+                    list.appendChild(img);
 
-const card = document.createElement('div');
-card.className = 'share-card';
-card.innerHTML = `<div class="card-header">${title} (${i+1}/3)</div><div class="render-box" style="font-size:18px;">${parseMarkdown(chunk.join('\n'))}</div><div class="card-footer">워크북(기적수업)</div>`;
-zone.appendChild(card);
+                    const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+                    globalGeneratedFiles.push(new File([blob], `card-${i}.png`, { type: 'image/png' }));
+                }
+                zone.innerHTML = "";
+                if(!list.children.length) list.innerHTML = "<div style='padding:20px;'>콘텐츠가 부족합니다.</div>";
+            } catch (err) {
+                list.innerHTML = "<div style='color:red; padding:20px;'>이미지 생성 실패</div>";
+            }
+        }
 
-const canvas = await html2canvas(card, { scale: 2, backgroundColor: "#fff", useCORS: true, height: card.scrollHeight });
-const dataUrl = canvas.toDataURL('image/png');
+        async function shareCapturedFiles() {
+            if (!globalGeneratedFiles.length) return alert("생성된 파일이 없습니다.");
+            if (navigator.share && navigator.canShare({ files: globalGeneratedFiles })) {
+                try { await navigator.share({ files: globalGeneratedFiles }); } 
+                catch (err) { if(err.name !== 'AbortError') alert("공유 실패: 이미지를 길게 눌러 저장하세요."); }
+            } else { alert("이 브라우저는 자동 공유를 지원하지 않습니다. 이미지를 꾹 눌러 저장해 주세요."); }
+        }
 
-const img = document.createElement('img');
-img.src = dataUrl; img.className = 'preview-img';
-list.appendChild(img);
+        async function saveCurrentBook() {
+            const title = $('book-title-input').value.trim() || "제목 없음";
+            $('book-title-input').value = title;
+            const id = currentBookId || 'eb_' + Date.now();
+            if (isEditMode) rawContent = $('editor-surface').innerText;
+            
+            const { error } = await supabaseClient.from('acim_workbook').upsert({ id, title, content: rawContent, updated_at: new Date().toISOString() });
+            if (error) return alert("저장 실패: " + error.message);
+            
+            currentBookId = id; document.title = title + "워크북(기적수업)";
+            setMode(false); showToast();
+        }
 
-const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
-globalGeneratedFiles.push(new File([blob], `card-${i}.png`, { type: 'image/png' }));
-}
-zone.innerHTML = "";
-if(!list.children.length) list.innerHTML = "<div style='padding:20px;'>콘텐츠가 부족합니다.</div>";
-} catch (err) {
-list.innerHTML = "<div style='color:red; padding:20px;'>이미지 생성 실패</div>";
-}
-}
+        async function loadBook(id) {
+            const { data, error } = await supabaseClient.from('acim_workbook').select('*').eq('id', id).single();
+            if (error) return alert("불러오기 실패: " + error.message);
+            if (data) loadBookData(data);
+        }
 
-async function shareCapturedFiles() {
-if (!globalGeneratedFiles.length) return alert("생성된 파일이 없습니다.");
-if (navigator.share && navigator.canShare({ files: globalGeneratedFiles })) {
-try { await navigator.share({ files: globalGeneratedFiles }); } 
-catch (err) { if(err.name !== 'AbortError') alert("공유 실패: 이미지를 길게 눌러 저장하세요."); }
-} else { alert("이 브라우저는 자동 공유를 지원하지 않습니다. 이미지를 꾹 눌러 저장해 주세요."); }
-}
+        function loadBookData(book) {
+            currentBookId = book.id; rawContent = book.content || ""; 
+            $('book-title-input').value = book.title || "제목 없음";
+            document.title = $('book-title-input').value + "워크북(기적수업)"; 
+            setMode(false); closeModals();
+        }
 
-async function saveCurrentBook() {
-const title = $('book-title-input').value.trim() || "제목 없음";
-$('book-title-input').value = title;
-const id = currentBookId || 'eb_' + Date.now();
-if (isEditMode) rawContent = $('editor-surface').innerText;
+        async function openLibrary() {
+            const list = $('book-list');
+            list.innerHTML = '<div style="padding:15px; color:#999; text-align:center;">📚 서재 불러오는 중...</div>';
+            $('library-modal').style.display = $('overlay').style.display = 'block';
 
-const { error } = await supabaseClient.from('acim_workbook').upsert({ id, title, content: rawContent, updated_at: new Date().toISOString() });
-if (error) return alert("저장 실패: " + error.message);
+            const { data, error } = await supabaseClient.from('acim_workbook').select('id, title');
+            if (error) return list.innerHTML = `<div style="padding:15px; color:red; text-align:center;">에러: ${error.message}</div>`;
+            if (!data || !data.length) return list.innerHTML = '<div style="padding:15px; color:#999; text-align:center;">서재가 비어 있습니다.</div>';
 
-currentBookId = id; document.title = title + "워크북(기적수업)";
-setMode(false); showToast();
-}
+            data.sort((a, b) => (a.title || "제목 없음").localeCompare(b.title || "제목 없음", undefined, { numeric: true, sensitivity: 'base' }));
+            list.innerHTML = data.map(b => `<div class="book-item" onclick="loadBook('${b.id}')"><span class="book-item-title">📘 ${b.title}</span><button class="delete-btn" onclick="deleteBook('${b.id}', event)">❌</button></div>`).join('');
+        }
 
-async function loadBook(id) {
-const { data, error } = await supabaseClient.from('acim_workbook').select('*').eq('id', id).single();
-if (error) return alert("불러오기 실패: " + error.message);
-if (data) loadBookData(data);
-}
+        async function deleteBook(id, event) {
+            event.stopPropagation();
+            if (!confirm("정말 삭제하시겠습니까?")) return;
+            const { error } = await supabaseClient.from('acim_workbook').delete().eq('id', id);
+            if (error) return alert("삭제 실패: " + error.message);
 
-function loadBookData(book) {
-currentBookId = book.id; rawContent = book.content || ""; 
-$('book-title-input').value = book.title || "제목 없음";
-document.title = $('book-title-input').value + "워크북(기적수업)"; 
-setMode(false); closeModals();
-}
+            if (currentBookId === id) {
+                const { data } = await supabaseClient.from('acim_workbook').select('id').order('updated_at', { ascending: false }).limit(1);
+                data && data.length > 0 ? loadBook(data[0].id) : createNewBook();
+            } else { openLibrary(); }
+        }
 
-async function openLibrary() {
-const list = $('book-list');
-list.innerHTML = '<div style="padding:15px; color:#999; text-align:center;">📚 서재 불러오는 중...</div>';
-$('library-modal').style.display = $('overlay').style.display = 'block';
-
-const { data, error } = await supabaseClient.from('acim_workbook').select('id, title');
-if (error) return list.innerHTML = `<div style="padding:15px; color:red; text-align:center;">에러: ${error.message}</div>`;
-if (!data || !data.length) return list.innerHTML = '<div style="padding:15px; color:#999; text-align:center;">서재가 비어 있습니다.</div>';
-
-data.sort((a, b) => (a.title || "제목 없음").localeCompare(b.title || "제목 없음", undefined, { numeric: true, sensitivity: 'base' }));
-list.innerHTML = data.map(b => `<div class="book-item" onclick="loadBook('${b.id}')"><span class="book-item-title">📘 ${b.title}</span><button class="delete-btn" onclick="deleteBook('${b.id}', event)">❌</button></div>`).join('');
-}
-
-async function deleteBook(id, event) {
-event.stopPropagation();
-if (!confirm("정말 삭제하시겠습니까?")) return;
-const { error } = await supabaseClient.from('acim_workbook').delete().eq('id', id);
-if (error) return alert("삭제 실패: " + error.message);
-
-if (currentBookId === id) {
-const { data } = await supabaseClient.from('acim_workbook').select('id').order('updated_at', { ascending: false }).limit(1);
-data && data.length > 0 ? loadBook(data[0].id) : createNewBook();
-} else { openLibrary(); }
-}
-
-function createNewBook() { 
-currentBookId = null; rawContent = ""; 
-$('book-title-input').value = ""; $('editor-surface').innerText = ""; 
-document.title = "새 글 작성 - 워크북(기적수업)"; setMode(true); closeModals(); 
-}
-function adjustFont(v) { 
-fontSize += (v*2); $('editor-surface').style.fontSize = fontSize + 'px'; 
-localStorage.setItem('eb_font_size', fontSize);
-}
-function closeModals() { document.querySelectorAll('.modal, .modal-overlay').forEach(el => el.style.display = 'none'); }
-function showToast() { const t = $('save-toast'); t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 1500); }
-
-init();
-</script>
+        function createNewBook() { 
+            currentBookId = null; rawContent = ""; 
+            $('book-title-input').value = ""; $('editor-surface').innerText = ""; 
+            document.title = "새 글 작성 - 워크북(기적수업)"; setMode(true); closeModals(); 
+        }
+        function adjustFont(v) { 
+            fontSize += (v*2); $('editor-surface').style.fontSize = fontSize + 'px'; 
+            localStorage.setItem('eb_font_size', fontSize);
+        }
+        function closeModals() { document.querySelectorAll('.modal, .modal-overlay').forEach(el => el.style.display = 'none'); }
+        function showToast() { const t = $('save-toast'); t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 1500); }
+        
+        init();
+    </script>
 </body>
 </html>

@@ -16,7 +16,7 @@
         --text-sub: #8E8E93;
         --border-color: #E5E5EA;
         --danger-color: #FF3B30;
-        --share-color: #34C759; /* 공유 버튼 색상 (초록 계열) */
+        --share-color: #34C759; 
     }
     
     body {
@@ -54,10 +54,10 @@
         font-weight: 700;
     }
 
-    /* 행선지 및 버튼 그리드 (나라창 작게 조정) */
+    /* 행선지 및 버튼 그리드 */
     .destination-row {
         display: grid;
-        grid-template-columns: 80px 1fr auto auto; /* 나라(80px), 도시(나머지), 저장, 공유 */
+        grid-template-columns: 80px 1fr auto auto; 
         gap: 8px;
         align-items: center;
         background: var(--card-bg);
@@ -167,6 +167,13 @@
         cursor: pointer;
     }
 
+    .btn-add-item {
+        display: none !important;
+    }
+    .section-card.editing .btn-add-item {
+        display: inline-block !important;
+    }
+
     .section-content {
         padding: 0 16px 16px 16px;
         display: none; 
@@ -214,55 +221,63 @@
         min-height: 40px;
     }
 
-    /* 항공권 영역 */
-    .flight-block {
-        margin-bottom: 16px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid var(--border-color);
+    /* 항공권 영역 스타일 */
+    .flight-item-block {
+        background: #F9F9F9;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 12px;
+        position: relative;
     }
-    .flight-block:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
-    }
-
-    .flight-item-row {
-        display: grid;
-        grid-template-columns: 75px 1fr; 
-        gap: 10px;
-        align-items: center;
-        margin-bottom: 8px;
-    }
-    .flight-item-row:last-child {
+    .flight-item-block:last-child {
         margin-bottom: 0;
     }
-
-    .flight-label {
-        font-size: 0.85rem; 
-        font-weight: 600;
-        white-space: nowrap;
-    }
-
-    .flight-inputs-col {
+    
+    .flight-row-top {
         display: flex;
-        flex-direction: column;
         gap: 8px;
+        margin-bottom: 8px;
+        padding-right: 35px;
+    }
+
+    .btn-remove-flight {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: transparent;
+        border: none;
+        color: var(--danger-color);
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .flight-sub-box {
+        background: #FFFFFF;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 8px;
+        margin-top: 6px;
+    }
+    .flight-sub-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 6px;
     }
 
     .flight-inputs-grid {
         display: flex; 
-        gap: 8px;
+        gap: 6px;
+        margin-bottom: 6px;
     }
-
+    .flight-inputs-grid:last-child {
+        margin-bottom: 0;
+    }
     .flight-inputs-grid > * {
         flex: 1;
-        width: 50%;
         min-width: 0;
-    }
-
-    .flight-inputs-grid input[type="text"],
-    .flight-inputs-grid input[type="date"] {
-        padding: 7px 10px; 
     }
 
     .time-input-group {
@@ -271,28 +286,24 @@
         background-color: #FAFAFA;
         border: 1px solid var(--border-color);
         border-radius: 8px;
-        padding: 0 10px;
+        padding: 0 8px;
         box-sizing: border-box;
         height: 38px;
     }
     .time-input-group label {
-        font-size: 0.8rem; 
+        font-size: 0.75rem; 
         color: var(--text-sub);
         white-space: nowrap;
-        margin-right: 6px;
+        margin-right: 4px;
     }
     .time-input-group input[type="time"] {
         border: none;
         background: transparent;
         padding: 0;
-        font-size: 14px;
+        font-size: 13px;
         flex-grow: 1;
         width: 100%;
         height: 100%;
-    }
-    .time-input-group:focus-within {
-        border-color: var(--primary-color);
-        background-color: #FFFFFF;
     }
 
     /* 숙소 정보 메인 카드 */
@@ -336,6 +347,13 @@
         height: 100%;
     }
 
+    .hotel-address-grid {
+        display: grid;
+        grid-template-columns: 1fr 100px;
+        gap: 6px;
+        margin-top: 6px;
+    }
+
     .btn-remove-hotel {
         position: absolute;
         top: 12px;
@@ -348,7 +366,7 @@
         cursor: pointer;
     }
 
-    /* 읽기/수정 모드 공통 텍스트박스 리셋 및 완벽한 수직 정렬 */
+    /* 읽기/수정 모드 공통 텍스트박스 리셋 및 수직 정렬 */
     .check-textarea, .schedule-textarea, .day-hotel-name {
         border: 1px solid transparent !important;
         background: transparent !important;
@@ -375,12 +393,10 @@
         background-color: #FFFFFF !important;
     }
 
-    /* 순서 및 추가/삭제 버튼 기본 숨김 처리 */
     .order-controls, .btn-remove-check, .btn-remove-schedule, .btn-day-add {
         display: none !important; 
     }
     
-    /* 수정 모드일 때만 요소들을 표시하고 정렬 */
     .section-card.editing .order-controls {
         display: flex !important;
         align-items: center;
@@ -428,10 +444,11 @@
         border-radius: 8px;
         padding: 2px 10px; 
         gap: 6px;
+        box-sizing: border-box;
     }
     .section-card:not(.editing) .check-item {
-        background: transparent !important;
-        border: 1px solid transparent !important;
+        background: #FFFFFF !important;
+        border: 1px solid var(--border-color) !important;
     }
 
     .check-item input[type="checkbox"] {
@@ -446,7 +463,6 @@
         flex-grow: 1;
     }
 
-    /* 체크 삭제 버튼 */
     .btn-remove-check {
         background: transparent;
         border: none;
@@ -490,7 +506,6 @@
         cursor: pointer;
     }
 
-    /* 일자별 숙소 정보 박스 */
     .day-hotel-box {
         background: #F2F9F4; 
         border: 1px solid #D1E7DD; 
@@ -517,7 +532,6 @@
         gap: 8px;
     }
 
-    /* 개별 일정 항목 테두리 및 정렬 */
     .schedule-item-row {
         display: flex;
         align-items: center; 
@@ -546,7 +560,6 @@
         flex-grow: 1;
     }
 
-    /* 세부일정 삭제 버튼 */
     .btn-remove-schedule {
         background: transparent;
         border: none;
@@ -570,7 +583,7 @@
 <body>
 
 <div class="container" id="capture-area">
-    <!-- 화면 상단 고정 영역 (제목 + 행선지) -->
+    <!-- 화면 상단 고정 영역 -->
     <div class="sticky-header-container" id="header-area">
         <h1>✈️ 해외 여행 체크리스트 & 일정</h1>
         <div class="destination-row">
@@ -581,62 +594,24 @@
         </div>
     </div>
 
-    <!-- 1. 비행기 & 항공권 정보 -->
-    <div class="section-card">
+    <!-- 1. 항공권 정보 (다인원 지원) -->
+    <div class="section-card" id="card-flight">
         <div class="toggle-header">
             <div class="toggle-title-area" onclick="toggleSection(this)">
                 <span class="toggle-icon">▼</span>
                 <span>🎫 항공권 정보</span>
             </div>
+            <div class="header-action-area">
+                <button class="btn-header-action btn-add-item" onclick="addFlightItem()">+ 추가</button>
+                <button class="btn-header-action" onclick="toggleEditMode('card-flight', this)">수정</button>
+            </div>
         </div>
         <div class="section-content">
-            <div class="flight-block">
-                <div class="flight-item-row">
-                    <span class="flight-label">🛫 출국편</span>
-                    <div class="flight-inputs-col">
-                        <div class="flight-inputs-grid">
-                            <input type="text" id="out-flight-num" placeholder="편명(예:KE001)">
-                            <input type="date" id="out-date" onchange="generateItinerary()">
-                        </div>
-                        <div class="flight-inputs-grid">
-                            <div class="time-input-group">
-                                <label>출발</label>
-                                <input type="time" id="out-time-dep">
-                            </div>
-                            <div class="time-input-group">
-                                <label>도착</label>
-                                <input type="time" id="out-time-arr">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flight-block">
-                <div class="flight-item-row">
-                    <span class="flight-label">🛬 귀국편</span>
-                    <div class="flight-inputs-col">
-                        <div class="flight-inputs-grid">
-                            <input type="text" id="in-flight-num" placeholder="편명(예:KE002)">
-                            <input type="date" id="in-date" onchange="generateItinerary()">
-                        </div>
-                        <div class="flight-inputs-grid">
-                            <div class="time-input-group">
-                                <label>출발</label>
-                                <input type="time" id="in-time-dep">
-                            </div>
-                            <div class="time-input-group">
-                                <label>도착</label>
-                                <input type="time" id="in-time-arr">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div id="flight-list"></div>
         </div>
     </div>
 
-    <!-- 2. 숙소 정보 -->
+    <!-- 2. 숙소 정보 (영문 주소 및 우편번호 추가) -->
     <div class="section-card" id="card-hotel">
         <div class="toggle-header">
             <div class="toggle-title-area" onclick="toggleSection(this)">
@@ -644,7 +619,8 @@
                 <span>🏨 숙소 정보</span>
             </div>
             <div class="header-action-area">
-                <button class="btn-header-action" onclick="addHotel()">추가</button>
+                <button class="btn-header-action btn-add-item" onclick="addHotel()">+ 추가</button>
+                <button class="btn-header-action" onclick="toggleEditMode('card-hotel', this)">수정</button>
             </div>
         </div>
         <div class="section-content">
@@ -660,7 +636,7 @@
                 <span>📱 필수 확인 및 어플</span>
             </div>
             <div class="header-action-area">
-                <button class="btn-header-action" onclick="addCheckItem('app')">추가</button>
+                <button class="btn-header-action btn-add-item" onclick="addCheckItem('app')">+ 추가</button>
                 <button class="btn-header-action" onclick="toggleEditMode('card-app', this)">수정</button>
             </div>
         </div>
@@ -677,7 +653,7 @@
                 <span>🎒 준비물 체크리스트</span>
             </div>
             <div class="header-action-area">
-                <button class="btn-header-action" onclick="addCheckItem('prep')">추가</button>
+                <button class="btn-header-action btn-add-item" onclick="addCheckItem('prep')">+ 추가</button>
                 <button class="btn-header-action" onclick="toggleEditMode('card-prep', this)">수정</button>
             </div>
         </div>
@@ -694,14 +670,14 @@
         </div>
         <div class="static-content" id="itinerary-wrapper">
             <div id="itinerary-list">
-                <div class="empty-itinerary">출국 날짜와 귀국 날짜를 선택하시면<br>일정표가 자동으로 생성됩니다.</div>
+                <div class="empty-itinerary">항공권 정보의 출국/귀국 날짜를 설정하시면<br>일정표가 자동으로 생성됩니다.</div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // --- 섹션 토글 (숨기기/보이기) ---
+    // --- 섹션 토글 ---
     function toggleSection(titleAreaElement) {
         const card = titleAreaElement.closest('.section-card');
         const content = card.querySelector('.section-content');
@@ -720,19 +696,36 @@
         }
     }
 
-    // --- 수정 모드 토글 (읽기모드 <-> 수정모드 전환) ---
+    // --- 수정 모드 토글 ---
     function toggleEditMode(cardId, btn) {
         const card = document.getElementById(cardId);
+        const content = card.querySelector('.section-content');
+        const icon = card.querySelector('.toggle-icon');
+
         card.classList.toggle('editing');
+
         if (card.classList.contains('editing')) {
             btn.style.backgroundColor = '#007AFF';
             btn.style.color = '#FFFFFF';
             btn.textContent = '완료';
+            
+            if (content && (content.style.display === 'none' || content.style.display === '')) {
+                content.style.display = 'block';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
         } else {
             btn.style.backgroundColor = '#E5E5EA';
             btn.style.color = '#007AFF';
             btn.textContent = '수정';
+            // 수정 완료 시 일자별 숙소 이름 자동 갱신
+            updateItineraryHotels();
         }
+        
+        setTimeout(() => {
+            card.querySelectorAll('textarea').forEach(textarea => {
+                autoResizeTextarea(textarea);
+            });
+        }, 10);
     }
 
     // --- Textarea 자동 높이 조절 ---
@@ -753,9 +746,10 @@
         autoResizeTextarea(e.target);
     }
 
-    // 페이지 로드 시 초기화
+    // 초기화 로드
     document.addEventListener('DOMContentLoaded', () => {
         loadBasicData();
+        loadFlights();
         loadHotels();
         loadChecklists();
         generateItinerary(); 
@@ -766,9 +760,68 @@
         }, 150); 
     });
 
-    // --- 1. 숙소 동적 추가/삭제 ---
+    // --- 1. 항공권 동적 추가/관리 ---
+    let flightCount = 0;
+    function addFlightItem(name = '', outNum = '', outDate = '', outDep = '', outArr = '', inNum = '', inDate = '', inDep = '', inArr = '') {
+        flightCount++;
+        const html = `
+            <div class="flight-item-block" id="flight-${flightCount}">
+                <button type="button" class="btn-remove-flight" onclick="removeFlight(${flightCount})">삭제</button>
+                <div class="flight-row-top">
+                    <input type="text" class="flight-name" placeholder="이름 (예: 홍길동)" value="${name}" style="font-weight:600;">
+                </div>
+                
+                <!-- 출국편 -->
+                <div class="flight-sub-box">
+                    <div class="flight-sub-title">🛫 출국편</div>
+                    <div class="flight-inputs-grid">
+                        <input type="text" class="out-flight-num" placeholder="편명(예:KE001)" value="${outNum}">
+                        <input type="date" class="out-date" value="${outDate}" onchange="generateItinerary()">
+                    </div>
+                    <div class="flight-inputs-grid">
+                        <div class="time-input-group">
+                            <label>출발</label>
+                            <input type="time" class="out-time-dep" value="${outDep}">
+                        </div>
+                        <div class="time-input-group">
+                            <label>도착</label>
+                            <input type="time" class="out-time-arr" value="${outArr}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 귀국편 -->
+                <div class="flight-sub-box">
+                    <div class="flight-sub-title">🛬 귀국편</div>
+                    <div class="flight-inputs-grid">
+                        <input type="text" class="in-flight-num" placeholder="편명(예:KE002)" value="${inNum}">
+                        <input type="date" class="in-date" value="${inDate}" onchange="generateItinerary()">
+                    </div>
+                    <div class="flight-inputs-grid">
+                        <div class="time-input-group">
+                            <label>출발</label>
+                            <input type="time" class="in-time-dep" value="${inDep}">
+                        </div>
+                        <div class="time-input-group">
+                            <label>도착</label>
+                            <input type="time" class="in-time-arr" value="${inArr}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('flight-list').insertAdjacentHTML('beforeend', html);
+    }
+
+    function removeFlight(id) {
+        const item = document.getElementById(`flight-${id}`);
+        if(item) item.remove();
+        generateItinerary();
+    }
+
+    // --- 2. 숙소 동적 추가/관리 (영문 주소, 우편번호 추가) ---
     let hotelCount = 0;
-    function addHotel(checkIn = '', checkOut = '', name = '') {
+    function addHotel(checkIn = '', checkOut = '', name = '', address = '', zip = '') {
         hotelCount++;
         const html = `
             <div class="hotel-item" id="hotel-${hotelCount}">
@@ -776,27 +829,34 @@
                 <div class="hotel-dates">
                     <div class="hotel-date-group">
                         <label>입실</label>
-                        <input type="date" class="hotel-checkin" value="${checkIn}">
+                        <input type="date" class="hotel-checkin" value="${checkIn}" onchange="updateItineraryHotels()">
                     </div>
                     <div class="hotel-date-group">
                         <label>퇴실</label>
-                        <input type="date" class="hotel-checkout" value="${checkOut}">
+                        <input type="date" class="hotel-checkout" value="${checkOut}" onchange="updateItineraryHotels()">
                     </div>
                 </div>
-                <div class="hotel-name-col">
-                    <textarea class="hotel-name" rows="2" placeholder="숙소명 및 주소">${name}</textarea>
+                <div class="hotel-name-col" style="margin-bottom:6px;">
+                    <textarea class="hotel-name" rows="1" placeholder="숙소명" oninput="updateItineraryHotels()">${name}</textarea>
+                </div>
+                <div class="hotel-address-grid">
+                    <input type="text" class="hotel-address" placeholder="Street Address (영문 주소)" value="${address}">
+                    <input type="text" class="hotel-zip" placeholder="Zip (우편번호)" value="${zip}">
                 </div>
             </div>
         `;
         document.getElementById('hotel-list').insertAdjacentHTML('beforeend', html);
         attachAutoResize();
+        updateItineraryHotels();
     }
+
     function removeHotel(id) {
         const item = document.getElementById(`hotel-${id}`);
         if(item) item.remove();
+        updateItineraryHotels();
     }
 
-    // --- 2. 동적 체크리스트 ---
+    // --- 3. 동적 체크리스트 ---
     const defaultAppItems = [
         { text: "여권 만기일 확인 (출발일 기준 6개월 이상)", checked: false },
         { text: "입국 신고서 어플 (Visit Japan 등)", checked: false },
@@ -845,14 +905,10 @@
 
         if (direction === 'up') {
             const prev = item.previousElementSibling;
-            if (prev) {
-                item.parentNode.insertBefore(item, prev);
-            }
+            if (prev) item.parentNode.insertBefore(item, prev);
         } else if (direction === 'down') {
             const next = item.nextElementSibling;
-            if (next) {
-                item.parentNode.insertBefore(next, item);
-            }
+            if (next) item.parentNode.insertBefore(next, item);
         }
 
         const dayContainer = item.closest('.schedule-items-container');
@@ -862,16 +918,25 @@
         }
     }
 
-    // --- 3. 일자별 일정 자동 생성 및 세부 입력창 관리 ---
+    // --- 4. 일자별 일정 자동 생성 및 숙소 매칭 로직 ---
     function generateItinerary() {
-        const outDateStr = document.getElementById('out-date').value;
-        const inDateStr = document.getElementById('in-date').value;
+        // 모든 항공권 날짜 중 가장 빠른 출국일과 가장 늦은 귀국일 탐색
+        const outDates = Array.from(document.querySelectorAll('.out-date')).map(i => i.value).filter(Boolean);
+        const inDates = Array.from(document.querySelectorAll('.in-date')).map(i => i.value).filter(Boolean);
         const itineraryList = document.getElementById('itinerary-list');
 
-        if (!outDateStr || !inDateStr) return;
+        if (outDates.length === 0 || inDates.length === 0) {
+            itineraryList.innerHTML = '<div class="empty-itinerary">항공권 정보의 출국/귀국 날짜를 설정하시면<br>일정표가 자동으로 생성됩니다.</div>';
+            return;
+        }
 
-        const startDate = new Date(outDateStr);
-        const endDate = new Date(inDateStr);
+        outDates.sort();
+        inDates.sort();
+        const minOutDate = outDates[0];
+        const maxInDate = inDates[inDates.length - 1];
+
+        const startDate = new Date(minOutDate);
+        const endDate = new Date(maxInDate);
         const diffDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
         if (diffDays <= 0) {
@@ -879,13 +944,10 @@
             return;
         }
 
-        const existingHotels = {};
+        // 기존 일정 내용 백업
         const existingSchedules = {};
         document.querySelectorAll('.day-block').forEach((dayBlock, index) => {
             const dayNum = index + 1;
-            const hotelNameInput = dayBlock.querySelector('.day-hotel-name');
-            existingHotels[dayNum] = hotelNameInput ? hotelNameInput.value : '';
-
             existingSchedules[dayNum] = [];
             dayBlock.querySelectorAll('.schedule-textarea').forEach(textarea => {
                 existingSchedules[dayNum].push(textarea.value);
@@ -899,34 +961,66 @@
             const currentDate = new Date(startDate);
             currentDate.setDate(currentDate.getDate() + (i - 1));
             
-            const prevHotelName = existingHotels[i] || '';
+            // 날짜 문자열(YYYY-MM-DD) 생성
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const day = String(currentDate.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
 
             const dayHTML = `
-                <div class="day-block" id="day-block-${i}">
+                <div class="day-block" id="day-block-${i}" data-date="${dateStr}">
                     <div class="day-header-row">
                         <div class="day-title">Day ${i} <span style="font-size:0.75rem; color:#8E8E93; font-weight:normal;">(${currentDate.getMonth() + 1}/${currentDate.getDate()} ${daysArr[currentDate.getDay()]})</span></div>
-                        <button type="button" class="btn-day-add" onclick="addScheduleItem(${i})">추가</button>
+                        <button type="button" class="btn-day-add" onclick="addScheduleItem(${i})">+ 추가</button>
                     </div>
-                    <!-- 인원수 없이 숙소명 입력란만 남김 -->
                     <div class="day-hotel-box">
-                        <textarea class="day-hotel-name" rows="1" placeholder="숙소명 입력">${prevHotelName}</textarea>
+                        <textarea class="day-hotel-name" rows="1" placeholder="해당 날짜 숙소 자동 연동" readonly></textarea>
                     </div>
-                    <div class="schedule-items-container" id="schedule-container-${i}">
-                        <!-- 세부 일정 입력창들이 여기에 동적으로 추가됨 -->
-                    </div>
+                    <div class="schedule-items-container" id="schedule-container-${i}"></div>
                 </div>
             `;
             itineraryList.insertAdjacentHTML('beforeend', dayHTML);
 
             if (existingSchedules[i] && existingSchedules[i].length > 0) {
-                existingSchedules[i].forEach(text => {
-                    addScheduleItem(i, text);
-                });
+                existingSchedules[i].forEach(text => addScheduleItem(i, text));
             } else {
                 addScheduleItem(i, '');
             }
         }
+        
+        updateItineraryHotels();
         attachAutoResize(); 
+    }
+
+    // 숙소 정보와 날짜를 비교해 일자별 숙소명을 자동으로 채워주는 함수
+    function updateItineraryHotels() {
+        const hotelItems = document.querySelectorAll('.hotel-item');
+        const hotelsData = [];
+        hotelItems.forEach(item => {
+            const checkIn = item.querySelector('.hotel-checkin').value;
+            const checkOut = item.querySelector('.hotel-checkout').value;
+            const name = item.querySelector('.hotel-name').value;
+            if (checkIn && checkOut && name) {
+                hotelsData.push({ checkIn, checkOut, name });
+            }
+        });
+
+        document.querySelectorAll('.day-block').forEach(dayBlock => {
+            const dateStr = dayBlock.getAttribute('data-date');
+            const hotelNameTextarea = dayBlock.querySelector('.day-hotel-name');
+            if (!hotelNameTextarea || !dateStr) return;
+
+            let matchedHotelName = '';
+            // 해당 날짜가 체크인~체크아웃 기간 내에 포함되는지 확인 (퇴실일 당일은 제외하거나 포함할 수 있으므로 상황에 맞게 처리)
+            for (let h of hotelsData) {
+                if (dateStr >= h.checkIn && dateStr < h.checkOut) {
+                    matchedHotelName = h.name;
+                    break;
+                }
+            }
+            hotelNameTextarea.value = matchedHotelName;
+            autoResizeTextarea(hotelNameTextarea);
+        });
     }
 
     function addScheduleItem(dayNum, text = '') {
@@ -971,22 +1065,37 @@
         const rows = container.querySelectorAll('.schedule-item-row');
         rows.forEach((row, index) => {
             const numSpan = row.querySelector('.schedule-num');
-            if (numSpan) {
-                numSpan.textContent = index + 1;
-            }
+            if (numSpan) numSpan.textContent = index + 1;
         });
     }
 
-    // --- 4. 데이터 저장 및 불러오기 ---
-    const basicInputs = ['dest-country', 'dest-city', 'out-flight-num', 'out-date', 'out-time-dep', 'out-time-arr', 'in-flight-num', 'in-date', 'in-time-dep', 'in-time-arr'];
+    // --- 5. 데이터 저장 및 불러오기 ---
+    const basicInputs = ['dest-country', 'dest-city'];
 
     function saveAllData() {
         basicInputs.forEach(id => localStorage.setItem(id, document.getElementById(id).value));
 
+        // 항공권 데이터 저장
+        const flights = Array.from(document.querySelectorAll('.flight-item-block')).map(item => ({
+            name: item.querySelector('.flight-name').value,
+            outNum: item.querySelector('.out-flight-num').value,
+            outDate: item.querySelector('.out-date').value,
+            outDep: item.querySelector('.out-time-dep').value,
+            outArr: item.querySelector('.out-time-arr').value,
+            inNum: item.querySelector('.in-flight-num').value,
+            inDate: item.querySelector('.in-date').value,
+            inDep: item.querySelector('.in-time-dep').value,
+            inArr: item.querySelector('.in-time-arr').value
+        }));
+        localStorage.setItem('savedFlights', JSON.stringify(flights));
+
+        // 숙소 데이터 저장
         const hotels = Array.from(document.querySelectorAll('.hotel-item')).map(item => ({
             checkIn: item.querySelector('.hotel-checkin').value,
             checkOut: item.querySelector('.hotel-checkout').value,
-            name: item.querySelector('.hotel-name').value
+            name: item.querySelector('.hotel-name').value,
+            address: item.querySelector('.hotel-address').value,
+            zip: item.querySelector('.hotel-zip').value
         }));
         localStorage.setItem('savedHotels', JSON.stringify(hotels));
 
@@ -1005,15 +1114,11 @@
         const itineraries = {};
         document.querySelectorAll('.day-block').forEach((dayBlock, index) => {
             const dayNum = index + 1;
-            const hotelNameInput = dayBlock.querySelector('.day-hotel-name');
-            
             const items = [];
             dayBlock.querySelectorAll('.schedule-textarea').forEach(textarea => {
                 items.push(textarea.value);
             });
-
             itineraries[`day-${dayNum}`] = {
-                hotelName: hotelNameInput ? hotelNameInput.value : '',
                 schedules: items
             };
         });
@@ -1029,12 +1134,24 @@
         });
     }
 
+    function loadFlights() {
+        const savedFlightsStr = localStorage.getItem('savedFlights');
+        if (savedFlightsStr) {
+            const flights = JSON.parse(savedFlightsStr);
+            if (flights.length > 0) {
+                flights.forEach(f => addFlightItem(f.name, f.outNum, f.outDate, f.outDep, f.outArr, f.inNum, f.inDate, f.inDep, f.inArr));
+                return;
+            }
+        }
+        addFlightItem(); // 기본 1개 생성
+    }
+
     function loadHotels() {
         const savedHotelsStr = localStorage.getItem('savedHotels');
         if (savedHotelsStr) {
             const hotels = JSON.parse(savedHotelsStr);
             if (hotels.length > 0) {
-                hotels.forEach(h => addHotel(h.checkIn, h.checkOut, h.name));
+                hotels.forEach(h => addHotel(h.checkIn, h.checkOut, h.name, h.address, h.zip));
                 return;
             }
         }
@@ -1070,16 +1187,11 @@
                 const dayNum = index + 1;
                 const dayData = itineraries[`day-${dayNum}`];
                 if (dayData) {
-                    const hotelNameInput = dayBlock.querySelector('.day-hotel-name');
-                    if (hotelNameInput && dayData.hotelName) hotelNameInput.value = dayData.hotelName;
-
                     const items = dayData.schedules || (Array.isArray(dayData) ? dayData : []);
                     if (items.length > 0) {
                         const container = dayBlock.querySelector('.schedule-items-container');
                         container.innerHTML = ''; 
-                        items.forEach(text => {
-                            addScheduleItem(dayNum, text);
-                        });
+                        items.forEach(text => addScheduleItem(dayNum, text));
                     }
                 }
             });
@@ -1087,9 +1199,8 @@
         }
     }
 
-    // --- 5. 이미지 캡처 및 공유 기능 (카카오톡 연동 지원) ---
+    // --- 6. 이미지 캡처 및 공유 기능 ---
     async function shareAsImage() {
-        // 캡처 전에 모든 섹션을 펼치기
         document.querySelectorAll('.section-content').forEach(content => {
             content.style.display = 'block';
         });
@@ -1097,7 +1208,6 @@
             icon.style.transform = 'rotate(0deg)';
         });
 
-        // 캡처 전에 화면을 읽기 전용으로 전환 (수정 버튼이 눌러져 있다면 해제)
         document.querySelectorAll('.section-card').forEach(card => {
             if(card.classList.contains('editing')) {
                 const btn = card.querySelector('.btn-header-action:last-child');
@@ -1109,23 +1219,20 @@
 
         const container = document.getElementById('capture-area');
         const header = document.getElementById('header-area');
-        
-        // 캡처 시 헤더가 잘리거나 중복되지 않도록 sticky 임시 해제
         header.style.position = 'static';
 
         try {
             const canvas = await html2canvas(container, {
-                scale: 2, // 고해상도 캡처
+                scale: 2,
                 useCORS: true,
-                backgroundColor: '#F2F2F7' // 배경색 지정
+                backgroundColor: '#F2F2F7'
             });
 
-            header.style.position = 'sticky'; // 캡처 후 원상복구
+            header.style.position = 'sticky';
 
             canvas.toBlob(async function(blob) {
                 const file = new File([blob], "travel_planner.png", { type: "image/png" });
                 
-                // Web Share API가 지원되고 파일 전송이 가능한 스마트폰 환경(카카오톡 등)
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     try {
                         await navigator.share({
@@ -1134,10 +1241,9 @@
                             text: '우리 여행 일정과 체크리스트를 공유합니다!'
                         });
                     } catch (error) {
-                        console.log('공유가 취소되었거나 실패했습니다.', error);
+                        console.log('공유 취소됨', error);
                     }
                 } else {
-                    // PC 등 파일 전송 API를 미지원하는 경우 이미지 다운로드(갤러리 저장)로 대체
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;

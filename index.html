@@ -54,7 +54,7 @@
         font-weight: 700;
     }
 
-    /* 행선지 및 버튼 그리드 */
+    /* 행선지 및 버튼 그리드 (나라창, 도시창, 저장, 공유, 설정아이콘) */
     .destination-row {
         display: grid;
         grid-template-columns: 80px 1fr auto auto auto; 
@@ -115,20 +115,19 @@
         white-space: nowrap;
     }
 
+    /* 설정 버튼 배경 투명화 */
     .btn-inline-setting {
-        background-color: #8E8E93;
-        color: white;
+        background-color: transparent;
+        color: var(--text-main);
         border: none;
         border-radius: 8px;
         width: 38px;
         height: 38px;
-        font-size: 1.1rem;
-        font-weight: 600;
+        font-size: 1.2rem;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        white-space: nowrap;
     }
 
     .section-card {
@@ -702,7 +701,7 @@
                 <span>🎫 항공권 정보</span>
             </div>
             <div class="header-action-area">
-                <button class="btn-header-action btn-add-item" onclick="addFlightItem()">추가</button>
+                <button class="btn-header-action btn-add-item" onclick="addFlightItem()">+ 추가</button>
                 <button class="btn-header-action" onclick="toggleEditMode('card-flight', this)">수정</button>
             </div>
         </div>
@@ -719,7 +718,7 @@
                 <span>🏨 숙소 정보</span>
             </div>
             <div class="header-action-area">
-                <button class="btn-header-action btn-add-item" onclick="addHotel()">추가</button>
+                <button class="btn-header-action btn-add-item" onclick="addHotel()">+ 추가</button>
                 <button class="btn-header-action" onclick="toggleEditMode('card-hotel', this)">수정</button>
             </div>
         </div>
@@ -736,7 +735,7 @@
                 <span>📱 필수 확인 및 어플</span>
             </div>
             <div class="header-action-area">
-                <button class="btn-header-action btn-add-item" onclick="addCheckItem('app')">추가</button>
+                <button class="btn-header-action btn-add-item" onclick="addCheckItem('app')">+ 추가</button>
                 <button class="btn-header-action" onclick="toggleEditMode('card-app', this)">수정</button>
             </div>
         </div>
@@ -753,7 +752,7 @@
                 <span>🎒 준비물 체크리스트</span>
             </div>
             <div class="header-action-area">
-                <button class="btn-header-action btn-add-item" onclick="addCheckItem('prep')">추가</button>
+                <button class="btn-header-action btn-add-item" onclick="addCheckItem('prep')">+ 추가</button>
                 <button class="btn-header-action" onclick="toggleEditMode('card-prep', this)">수정</button>
             </div>
         </div>
@@ -1078,7 +1077,7 @@
                 <div class="day-block" id="day-block-${i}" data-date="${dateStr}">
                     <div class="day-header-row">
                         <div class="day-title">Day ${i} <span style="font-size:0.75rem; color:#8E8E93; font-weight:normal;">(${currentDate.getMonth() + 1}/${currentDate.getDate()} ${daysArr[currentDate.getDay()]})</span></div>
-                        <button type="button" class="btn-day-add" onclick="addScheduleItem(${i})">추가</button>
+                        <button type="button" class="btn-day-add" onclick="addScheduleItem(${i})">+ 추가</button>
                     </div>
                     <div class="day-hotel-box">
                         <textarea class="day-hotel-name" rows="1" placeholder="해당 날짜 숙소 자동 연동" readonly></textarea>
@@ -1306,7 +1305,7 @@
         }
     }
 
-    // --- 6. 설정 모달 (백업 및 복구) 기능 수정 완료 ---
+    // --- 6. 설정 모달 (백업 및 복구 - iOS 대응 Blob 방식 적용) ---
     function openSettingModal() {
         document.getElementById('setting-modal').style.display = 'flex';
     }
@@ -1315,7 +1314,7 @@
         document.getElementById('setting-modal').style.display = 'none';
     }
 
-    // 데이터 백업 (현재 화면에 입력된 내용과 localStorage 데이터를 정확히 통합하여 다운로드)
+    // 데이터 백업 (JSON 파일로 다운로드 - iOS Safari 보안 정책 우회를 위해 Blob 방식 적용)
     function backupDataFile() {
         const backupData = {
             country: document.getElementById('dest-country').value,
@@ -1327,13 +1326,22 @@
             savedItineraries: localStorage.getItem('savedItineraries')
         };
 
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+        const jsonStr = JSON.stringify(backupData, null, 2);
+        const blob = new Blob([jsonStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
         const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `travel_backup_${new Date().toISOString().slice(0,10)}.json`);
+        downloadAnchor.href = url;
+        downloadAnchor.download = `travel_backup_${new Date().toISOString().slice(0,10)}.json`;
         document.body.appendChild(downloadAnchor);
         downloadAnchor.click();
-        downloadAnchor.remove();
+
+        // 다운로드 후 객체 해제
+        setTimeout(() => {
+            document.body.removeChild(downloadAnchor);
+            URL.revokeObjectURL(url);
+        }, 100);
+
         closeSettingModal();
     }
 

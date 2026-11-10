@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>모바일 여행 플래너</title>
+<title>해외 여행 체크리스트 & 일정</title>
+<!-- 부드럽고 가독성 좋은 프리텐다드(Pretendard) 웹폰트 CDN 추가 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 <style>
     :root {
         --primary-color: #007AFF; 
@@ -16,7 +18,8 @@
     }
     
     body {
-        font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        /* 프리텐다드 폰트를 우선 적용하여 부드럽고 깔끔한 가독성 제공 */
+        font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         background-color: var(--bg-color);
         color: var(--text-main);
         line-height: 1.5;
@@ -30,6 +33,15 @@
         max-width: 800px;
         margin: 0 auto;
         padding-bottom: 80px; 
+    }
+
+    /* 페이지 타이틀 */
+    h1 {
+        text-align: center;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        font-size: 1.6rem;
+        font-weight: 700;
     }
 
     .destination-wrapper {
@@ -64,7 +76,7 @@
     /* 토글 헤더 및 우측 추가 버튼 배치 */
     .toggle-header {
         font-size: 1.05rem; 
-        font-weight: 700;
+        font-weight: 600;
         color: var(--text-main);
         padding: 16px;
         display: flex;
@@ -111,6 +123,20 @@
         display: none; 
     }
 
+    /* 고정형 섹션 헤더 및 콘텐츠 (일자별 일정용) */
+    .static-header {
+        font-size: 1.05rem; 
+        font-weight: 600;
+        color: var(--text-main);
+        padding: 16px;
+        background-color: var(--card-bg);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .static-content {
+        padding: 16px;
+    }
+
     input[type="text"], input[type="date"], input[type="time"], textarea {
         width: 100%;
         padding: 10px;
@@ -137,6 +163,7 @@
         min-height: 44px;
     }
 
+    /* 항공권 영역 이미지 구조 맞춤 정렬 */
     .flight-block {
         margin-bottom: 16px;
         padding-bottom: 16px;
@@ -148,12 +175,15 @@
         padding-bottom: 0;
     }
 
-    .flight-row-1 {
+    .flight-item-row {
         display: grid;
-        grid-template-columns: auto 1fr 1.2fr; 
-        gap: 6px;
+        grid-template-columns: 75px 1fr; 
+        gap: 10px;
         align-items: center;
         margin-bottom: 8px;
+    }
+    .flight-item-row:last-child {
+        margin-bottom: 0;
     }
 
     .flight-label {
@@ -162,10 +192,16 @@
         white-space: nowrap;
     }
 
-    .flight-row-2 {
+    .flight-inputs-col {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .flight-inputs-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 6px;
+        grid-template-columns: 1fr 1fr; 
+        gap: 8px;
     }
 
     .time-input-group {
@@ -174,18 +210,19 @@
         background-color: #FAFAFA;
         border: 1px solid var(--border-color);
         border-radius: 8px;
-        padding: 0 8px;
+        padding: 0 10px;
     }
     .time-input-group label {
-        font-size: 0.75rem; 
+        font-size: 0.8rem; 
         color: var(--text-sub);
         white-space: nowrap;
-        margin-right: 4px;
+        margin-right: 6px;
     }
     .time-input-group input[type="time"] {
         border: none;
         background: transparent;
         padding: 10px 0;
+        font-size: 14px;
         flex-grow: 1;
     }
     .time-input-group:focus-within {
@@ -310,7 +347,7 @@
         margin-bottom: 14px;
     }
     .day-title {
-        font-weight: 700;
+        font-weight: 600;
         margin-bottom: 6px;
         color: var(--text-main);
         font-size: 0.95rem;
@@ -335,7 +372,7 @@
         border: none;
         border-radius: 12px;
         font-size: 1rem;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
         box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
         z-index: 100;
@@ -345,6 +382,8 @@
 <body>
 
 <div class="container">
+    <h1>✈️ 해외 여행 체크리스트 & 일정</h1>
+
     <div class="destination-wrapper">
         <input type="text" id="destination" class="destination-input" placeholder="어디로 떠나시나요?">
     </div>
@@ -359,37 +398,45 @@
         </div>
         <div class="section-content">
             <div class="flight-block">
-                <div class="flight-row-1">
+                <div class="flight-item-row">
                     <span class="flight-label">🛫 출국편</span>
-                    <input type="text" id="out-flight-num" placeholder="편명(예:KE001)">
-                    <input type="date" id="out-date" onchange="generateItinerary()">
-                </div>
-                <div class="flight-row-2">
-                    <div class="time-input-group">
-                        <label>출발</label>
-                        <input type="time" id="out-time-dep">
-                    </div>
-                    <div class="time-input-group">
-                        <label>도착</label>
-                        <input type="time" id="out-time-arr">
+                    <div class="flight-inputs-col">
+                        <div class="flight-inputs-grid">
+                            <input type="text" id="out-flight-num" placeholder="편명(예:KE001)">
+                            <input type="date" id="out-date" onchange="generateItinerary()">
+                        </div>
+                        <div class="flight-inputs-grid">
+                            <div class="time-input-group">
+                                <label>출발</label>
+                                <input type="time" id="out-time-dep">
+                            </div>
+                            <div class="time-input-group">
+                                <label>도착</label>
+                                <input type="time" id="out-time-arr">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="flight-block">
-                <div class="flight-row-1">
+                <div class="flight-item-row">
                     <span class="flight-label">🛬 귀국편</span>
-                    <input type="text" id="in-flight-num" placeholder="편명(예:KE002)">
-                    <input type="date" id="in-date" onchange="generateItinerary()">
-                </div>
-                <div class="flight-row-2">
-                    <div class="time-input-group">
-                        <label>출발</label>
-                        <input type="time" id="in-time-dep">
-                    </div>
-                    <div class="time-input-group">
-                        <label>도착</label>
-                        <input type="time" id="in-time-arr">
+                    <div class="flight-inputs-col">
+                        <div class="flight-inputs-grid">
+                            <input type="text" id="in-flight-num" placeholder="편명(예:KE002)">
+                            <input type="date" id="in-date" onchange="generateItinerary()">
+                        </div>
+                        <div class="flight-inputs-grid">
+                            <div class="time-input-group">
+                                <label>출발</label>
+                                <input type="time" id="in-time-dep">
+                            </div>
+                            <div class="time-input-group">
+                                <label>도착</label>
+                                <input type="time" id="in-time-arr">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -444,15 +491,12 @@
         </div>
     </div>
 
-    <!-- 5. 자동 생성 일정 -->
+    <!-- 5. 일자별 일정 (항상 펼쳐짐) -->
     <div class="section-card">
-        <div class="toggle-header">
-            <div class="toggle-title-area" onclick="toggleSection(this)">
-                <span class="toggle-icon">▼</span>
-                <span>🗺️ 일자별 일정</span>
-            </div>
+        <div class="static-header">
+            🗺️ 일자별 일정
         </div>
-        <div class="section-content" id="itinerary-wrapper">
+        <div class="static-content" id="itinerary-wrapper">
             <div id="itinerary-list">
                 <div class="empty-itinerary">출국 날짜와 귀국 날짜를 선택하시면<br>일정표가 자동으로 생성됩니다.</div>
             </div>

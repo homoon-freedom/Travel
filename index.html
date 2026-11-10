@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>해외 여행 체크리스트 & 일정</title>
-<!-- 부드럽고 가독성 좋은 프리텐다드(Pretendard) 웹폰트 CDN 추가 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 <style>
     :root {
@@ -18,7 +17,6 @@
     }
     
     body {
-        /* 프리텐다드 폰트를 우선 적용하여 부드럽고 깔끔한 가독성 제공 */
         font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         background-color: var(--bg-color);
         color: var(--text-main);
@@ -35,7 +33,6 @@
         padding-bottom: 80px; 
     }
 
-    /* 페이지 타이틀 */
     h1 {
         text-align: center;
         color: var(--primary-color);
@@ -73,7 +70,6 @@
         overflow: hidden; 
     }
 
-    /* 토글 헤더 및 우측 추가 버튼 배치 */
     .toggle-header {
         font-size: 1.05rem; 
         font-weight: 600;
@@ -123,7 +119,6 @@
         display: none; 
     }
 
-    /* 고정형 섹션 헤더 및 콘텐츠 (일자별 일정용) */
     .static-header {
         font-size: 1.05rem; 
         font-weight: 600;
@@ -163,7 +158,7 @@
         min-height: 44px;
     }
 
-    /* 항공권 영역 이미지 구조 맞춤 정렬 */
+    /* 항공권 영역 */
     .flight-block {
         margin-bottom: 16px;
         padding-bottom: 16px;
@@ -199,9 +194,14 @@
     }
 
     .flight-inputs-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr; 
+        display: flex; 
         gap: 8px;
+    }
+
+    .flight-inputs-grid > * {
+        flex: 1;
+        width: 50%;
+        min-width: 0;
     }
 
     .time-input-group {
@@ -211,6 +211,7 @@
         border: 1px solid var(--border-color);
         border-radius: 8px;
         padding: 0 10px;
+        box-sizing: border-box;
     }
     .time-input-group label {
         font-size: 0.8rem; 
@@ -224,6 +225,7 @@
         padding: 10px 0;
         font-size: 14px;
         flex-grow: 1;
+        width: 100%;
     }
     .time-input-group:focus-within {
         border-color: var(--primary-color);
@@ -295,6 +297,7 @@
         cursor: pointer;
     }
 
+    /* 체크리스트 영역 (자동 줄바꿈 지원) */
     .check-list-container {
         display: flex;
         flex-direction: column;
@@ -316,18 +319,24 @@
         height: 20px;
         accent-color: var(--primary-color);
         cursor: pointer;
+        flex-shrink: 0; /* 체크박스 크기 고정 */
     }
     
-    .check-item input[type="text"] {
+    /* 텍스트가 길어지면 자동 줄바꿈되도록 수정 */
+    .check-item textarea.check-textarea {
         flex-grow: 1;
         border: none;
         background: transparent;
         padding: 4px 0;
         font-size: 14px;
         color: var(--text-main);
+        resize: none;
+        overflow: hidden;
+        min-height: 24px;
+        line-height: 1.4;
     }
     
-    .check-item input[type="text"]:focus {
+    .check-item textarea.check-textarea:focus {
         border: none; 
     }
 
@@ -339,6 +348,7 @@
         padding: 4px;
         margin-left: 5px;
         cursor: pointer;
+        flex-shrink: 0;
     }
 
     .day-block {
@@ -610,7 +620,7 @@
         return `
             <div class="check-item" id="${type}-item-${id}">
                 <input type="checkbox" class="${type}-checkbox" ${isChecked}>
-                <input type="text" class="${type}-text" value="${text}" placeholder="내용을 입력하세요">
+                <textarea class="check-textarea ${type}-text" rows="1" placeholder="내용을 입력하세요">${text}</textarea>
                 <button type="button" class="btn-remove-check" onclick="removeCheckItem('${type}-item-${id}')">✕</button>
             </div>
         `;
@@ -620,6 +630,7 @@
         const list = document.getElementById(`${type}-check-list`);
         const uniqueId = Date.now() + Math.floor(Math.random() * 1000);
         list.insertAdjacentHTML('beforeend', createCheckItemHTML(type, uniqueId, text, checked));
+        attachAutoResize();
     }
 
     function removeCheckItem(elementId) {

@@ -54,11 +54,11 @@
         font-weight: 700;
     }
 
-    /* 행선지 및 버튼 그리드 */
+    /* 행선지 및 버튼 그리드 (나라창, 도시창, 저장, 공유, 설정아이콘) */
     .destination-row {
         display: grid;
-        grid-template-columns: 80px 1fr auto auto; 
-        gap: 8px;
+        grid-template-columns: 80px 1fr auto auto auto; 
+        gap: 6px;
         align-items: center;
         background: var(--card-bg);
         padding: 10px;
@@ -94,9 +94,9 @@
         color: white;
         border: none;
         border-radius: 8px;
-        padding: 0 12px;
+        padding: 0 10px;
         height: 38px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         font-weight: 600;
         cursor: pointer;
         white-space: nowrap;
@@ -107,11 +107,27 @@
         color: white;
         border: none;
         border-radius: 8px;
-        padding: 0 12px;
+        padding: 0 10px;
         height: 38px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         font-weight: 600;
         cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .btn-inline-setting {
+        background-color: #8E8E93;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         white-space: nowrap;
     }
 
@@ -195,7 +211,6 @@
         padding: 16px;
     }
 
-    /* 기본 입력 및 읽기/수정 모드 제어 */
     input[type="text"], input[type="date"], input[type="time"], textarea {
         width: 100%;
         padding: 10px;
@@ -207,14 +222,14 @@
         background-color: #FAFAFA;
         -webkit-appearance: none;
         appearance: none;
-        pointer-events: none; /* 평소엔 읽기 전용 */
+        pointer-events: none; 
     }
 
     .section-card.editing input[type="text"],
     .section-card.editing input[type="date"],
     .section-card.editing input[type="time"],
     .section-card.editing textarea {
-        pointer-events: auto !important; /* 수정 모드일 때만 입력 가능 */
+        pointer-events: auto !important; 
         background-color: #FAFAFA !important;
     }
     
@@ -607,6 +622,61 @@
         text-align: center;
         padding: 16px 0;
     }
+
+    /* 백업/복구 모달 스타일 */
+    .modal-overlay {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .modal-content {
+        background: #FFFFFF;
+        width: 100%;
+        max-width: 400px;
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        box-sizing: border-box;
+    }
+    .modal-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 14px;
+        color: var(--text-main);
+        text-align: center;
+    }
+    .modal-btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        margin-bottom: 10px;
+    }
+    .btn-backup-action {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    .btn-restore-action {
+        background-color: #34C759;
+        color: white;
+    }
+    .btn-close-modal {
+        background-color: #E5E5EA;
+        color: var(--text-main);
+        margin-bottom: 0;
+    }
+    .file-input-hidden {
+        display: none;
+    }
 </style>
 </head>
 <body>
@@ -620,10 +690,11 @@
             <input type="text" id="dest-city" class="destination-input" placeholder="도시 (예: 오키나와)">
             <button type="button" class="btn-inline-save" onclick="saveAllData()">저장</button>
             <button type="button" class="btn-inline-share" onclick="shareAsImage()">공유</button>
+            <button type="button" class="btn-inline-setting" onclick="openSettingModal()" title="데이터 백업 및 복구">⚙️</button>
         </div>
     </div>
 
-    <!-- 1. 항공권 정보 (수정 버튼 추가) -->
+    <!-- 1. 항공권 정보 -->
     <div class="section-card" id="card-flight">
         <div class="toggle-header">
             <div class="toggle-title-area" onclick="toggleSection(this)">
@@ -702,6 +773,17 @@
                 <div class="empty-itinerary">항공권 정보의 출국/귀국 날짜를 설정하시면<br>일정표가 자동으로 생성됩니다.</div>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- 백업 및 복구 모달창 -->
+<div class="modal-overlay" id="setting-modal">
+    <div class="modal-content">
+        <div class="modal-title">⚙️ 데이터 백업 및 복구</div>
+        <button type="button" class="modal-btn btn-backup-action" onclick="backupDataFile()">데이터 백업 (파일 다운로드)</button>
+        <button type="button" class="modal-btn btn-restore-action" onclick="triggerRestoreFile()">데이터 복구 (파일 업로드)</button>
+        <input type="file" id="restore-file-input" class="file-input-hidden" accept=".json" onchange="restoreDataFile(event)">
+        <button type="button" class="modal-btn btn-close-modal" onclick="closeSettingModal()">닫기</button>
     </div>
 </div>
 
@@ -946,7 +1028,7 @@
         }
     }
 
-    // --- 4. 일자별 일정 자동 생성 및 숙소 매칭 로직 ---
+    // --- 4. 일자별 일정 자동 생성 및 숙소 매칭 로직 (마지막 날 체크아웃 처리 포함) ---
     function generateItinerary() {
         const outDates = Array.from(document.querySelectorAll('.out-date')).map(i => i.value).filter(Boolean);
         const inDates = Array.from(document.querySelectorAll('.in-date')).map(i => i.value).filter(Boolean);
@@ -1017,6 +1099,7 @@
         attachAutoResize(); 
     }
 
+    // 숙소 정보와 날짜를 비교해 일자별 숙소명을 자동으로 채우고 마지막 날은 '체크아웃' 붙이기
     function updateItineraryHotels() {
         const hotelItems = document.querySelectorAll('.hotel-item');
         const hotelsData = [];
@@ -1036,8 +1119,14 @@
 
             let matchedHotelName = '';
             for (let h of hotelsData) {
+                // 숙박 기간 내에 포함되는 경우 (체크인 당일 ~ 체크아웃 전날)
                 if (dateStr >= h.checkIn && dateStr < h.checkOut) {
                     matchedHotelName = h.name;
+                    break;
+                }
+                // 체크아웃 당일인 경우 전날 숙소에 '체크아웃' 글자 붙여서 표시
+                else if (dateStr === h.checkOut) {
+                    matchedHotelName = h.name + ' 체크아웃';
                     break;
                 }
             }
@@ -1220,7 +1309,72 @@
         }
     }
 
-    // --- 6. 이미지 캡처 및 공유 기능 ---
+    // --- 6. 설정 모달 (백업 및 복구) 기능 ---
+    function openSettingModal() {
+        document.getElementById('setting-modal').style.display = 'flex';
+    }
+
+    function closeSettingModal() {
+        document.getElementById('setting-modal').style.display = 'none';
+    }
+
+    // 데이터 백업 (JSON 파일로 다운로드)
+    function backupDataFile() {
+        const backupData = {
+            country: document.getElementById('dest-country').value,
+            city: document.getElementById('dest-city').value,
+            savedFlights: localStorage.getItem('savedFlights'),
+            savedHotels: localStorage.getItem('savedHotels'),
+            savedAppList: localStorage.getItem('savedAppList'),
+            savedPrepList: localStorage.getItem('savedPrepList'),
+            savedItineraries: localStorage.getItem('savedItineraries')
+        };
+
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `travel_backup_${new Date().toISOString().slice(0,10)}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+        closeSettingModal();
+    }
+
+    // 복구 파일 선택 창 열기
+    function triggerRestoreFile() {
+        document.getElementById('restore-file-input').click();
+    }
+
+    // 데이터 복구 (JSON 파일 업로드 및 적용)
+    function restoreDataFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const restored = JSON.parse(e.target.result);
+                
+                if(restored.country !== undefined) document.getElementById('dest-country').value = restored.country;
+                if(restored.city !== undefined) document.getElementById('dest-city').value = restored.city;
+                
+                if(restored.savedFlights) localStorage.setItem('savedFlights', restored.savedFlights);
+                if(restored.savedHotels) localStorage.setItem('savedHotels', restored.savedHotels);
+                if(restored.savedAppList) localStorage.setItem('savedAppList', restored.savedAppList);
+                if(restored.savedPrepList) localStorage.setItem('savedPrepList', restored.savedPrepList);
+                if(restored.savedItineraries) localStorage.setItem('savedItineraries', restored.savedItineraries);
+
+                alert('데이터가 성공적으로 복구되었습니다. 페이지를 새로고침합니다.');
+                location.reload();
+            } catch (err) {
+                console.error(err);
+                alert('유효하지 않은 백업 파일입니다.');
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    // --- 7. 이미지 캡처 및 공유 기능 ---
     async function shareAsImage() {
         document.querySelectorAll('.section-content').forEach(content => {
             content.style.display = 'block';
